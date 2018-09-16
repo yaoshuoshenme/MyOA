@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edu.mapper.LeavelogMapper" >
+  <resultMap id="BaseResultMap" type="com.edu.pojo.Leavelog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="lid" property="lid" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="msg" property="msg" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, uid, lid, type, createtime, msg
+  </sql>
+
+
+  <insert id="insert" parameterType="com.edu.pojo.Leavelog" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_leavelog (uid, lid, type, 
+      createtime, msg)
+    values (#{uid,jdbcType=INTEGER}, #{lid,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{msg,jdbcType=VARCHAR})
+  </insert>
+
+  <select id="selectByPage" resultType="com.edu.commons.vo.PageVo">
+    select *from t_leavelog limit #{page},#{limit}
+  </select>
+</mapper>

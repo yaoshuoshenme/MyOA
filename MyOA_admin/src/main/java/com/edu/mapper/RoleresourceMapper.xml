@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edu.mapper.RoleresourceMapper" >
+  <resultMap id="BaseResultMap" type="com.edu.pojo.Roleresource" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="resid" property="resid" jdbcType="INTEGER" />
+    <result column="rid" property="rid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, resid, rid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_roleresource
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_roleresource
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.edu.pojo.Roleresource" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_roleresource (resid, rid)
+    values (#{resid,jdbcType=INTEGER}, #{rid,jdbcType=INTEGER})
+  </insert>
+ 
+  <update id="updateByPrimaryKey" parameterType="com.edu.pojo.Roleresource" >
+    update t_roleresource
+    set resid = #{resid,jdbcType=INTEGER},
+      rid = #{rid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+
+</mapper>

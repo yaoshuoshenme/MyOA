@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edu.mapper.LeaveMapper" >
+  <resultMap id="BaseResultMap" type="com.edu.pojo.Leave" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="days" property="days" jdbcType="INTEGER" />
+    <result column="startDate" property="startdate" jdbcType="DATE" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+    <result column="taskid" property="taskid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, uid, days, startDate, createtime, reason, flag, taskid
+  </sql>
+  <select id="selectByLid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_leave
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" parameterType="com.edu.pojo.Leave" useGeneratedKeys="true">
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_leave (uid, days, startDate, 
+      createtime, reason, flag, 
+      taskid)
+    values (#{uid,jdbcType=INTEGER}, #{days,jdbcType=INTEGER}, #{startdate,jdbcType=DATE}, 
+      now(), #{reason,jdbcType=VARCHAR}, 0,
+      #{taskid,jdbcType=VARCHAR})
+  </insert>
+  <select id="selectByPage" resultType="com.edu.commons.vo.PageVo">
+    select *from t_leave limit #{page},#{limit}
+  </select>
+  <update id="udateFlagByLid" parameterType="java.lang.Integer">
+    update t_leave set flag= #{flag} where id=#{lid}
+  </update>
+
+  <select id="selectCount">
+    select count(*) from t_leave;
+  </select>
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edu.mapper.ResourceMapper" >
+  <resultMap id="BaseResultMap" type="com.edu.pojo.Resource" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="per" property="per" jdbcType="VARCHAR" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="parentid" property="parentid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, type, per, icon, parentid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_resource
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_resource
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.edu.pojo.Resource" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_resource (name, type, per, 
+      icon, parentid)
+    values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{per,jdbcType=VARCHAR}, 
+      #{icon,jdbcType=VARCHAR}, #{parentid,jdbcType=INTEGER})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.edu.pojo.Resource" >
+    update t_resource
+    set name = #{name,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      per = #{per,jdbcType=VARCHAR},
+      icon = #{icon,jdbcType=VARCHAR},
+      parentid = #{parentid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectMenu" resultType="com.edu.pojo.Resource" parameterType="java.lang.Integer">
+    SELECT res.*FROM t_resource res
+    INNER JOIN t_roleresource rr ON res.id = rr.resid
+    INNER JOIN t_userrole ur ON ur.rid = rr.rid
+    WHERE ur.uid = #{uid} AND res.type=1 ORDER BY res.parentid
+  </select>
+  
+  <select id="selectParentMenu" resultType="com.edu.pojo.Resource" parameterType="java.lang.Integer">
+    select res.* from t_resource res
+    left join t_roleresource rr on res.id = rr.resid
+    left join t_userrole ur on ur.rid = rr.rid
+    where ur.uid = #{uid} and res.type = 1 and res.parentid = -1
+    order by res.parentid
+  </select>
+  <select id="selectPageVo" resultType="com.edu.pojo.Resource" >
+    SELECT res.*FROM t_resource res limit #{pagestart},#{limit}
+  </select>
+  <select id="selectcount" resultType="java.lang.Integer">
+    select count(*) from t_resource;
+  </select>
+
+  <select id="selectByuid" resultType="java.lang.String" parameterType="java.lang.Integer">
+    select res.per from t_resource res
+    left join t_roleresource rr on res.id = rr.resid
+    left join t_userrole ur on ur.rid = rr.rid
+    where ur.uid = #{uid} and res.type = 2
+    order by res.id
+  </select>
+</mapper>

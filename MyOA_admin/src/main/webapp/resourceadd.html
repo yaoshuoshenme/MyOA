@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>权限管理</title>
+    <link rel="stylesheet" href="media/layui/css/layui.css"/>
+    <script type="application/javascript" src="media/js/jquery.min.js"></script>
+    <script type="application/javascript" src="media/layui/layui.js"></script>
+</head>
+<body>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>新增权限</legend>
+    </fieldset>
+    <form class="layui-form" action="/savemenu.do">
+        <div class="layui-form-item">
+            <label class="layui-form-label">资源名</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">类型</label>
+            <div class="layui-input-block">
+                <input type="radio" name="type" value="1" title="菜单" lay-filter="changetype" checked>
+                <input type="radio" name="type" value="2" title="按钮" lay-filter="changetype">
+            </div>
+        </div>
+        <div class="layui-form-item" id="menu">
+            <label class="layui-form-label">菜单级别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="menulevel" value="1" title="一级菜单" lay-filter="changelevel" checked>
+                <input type="radio" name="menulevel" value="2" title="二级菜单" lay-filter="changelevel">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline" id="parentmenu" style="display: none;">
+                <label class="layui-form-label">上级菜单</label>
+                <div class="layui-input-inline">
+                    <select name="parentid">
+                        <option value="-1">---请选择---</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">菜单路径</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="per"  class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" id="icon">
+            <div class="layui-inline">
+                <label class="layui-form-label">图标:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="icon"  class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="demo1">添加</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+
+</body>
+<script type="application/javascript">
+    var form;
+    layui.use("form",function () {
+        form = layui.form;
+
+        form.on('radio(changetype)', function(data){
+            var type = data.value;
+            if(type == 1){
+                $("#menu").css("display","block");
+                $("#parentmenu").css("display","none")
+                $("#icon").css("display","block")
+
+            }else{
+                $("#menu").css("display","none");
+                $("#icon").css("display","none")
+                $("#parentmenu").css("display","none")
+            }
+            form.render();
+        });
+
+        form.on('radio(changelevel)', function(data){
+            var type = data.value;
+            if(type == 1){
+                $("#parentmenu").css("display","none")
+                $("#icon").css("display","block")
+            }else{
+                $("#parentmenu").css("display","block")
+                $("#icon").css("display","none")
+            }
+            form.render();
+        });
+
+        //监听提交
+        form.on("submit(demo1)",function (data) {
+            return true;
+        })
+
+    })
+
+    $(function () {
+        $.get("parentmenu.do",null,function (datas) {
+            $.each(datas,function (i,data) {
+                $("[name='parentid']").append($("<option value="+data.id+">"+data.name+"</option>"))
+            })
+        })
+
+    })
+
+
+
+</script>
+</html>

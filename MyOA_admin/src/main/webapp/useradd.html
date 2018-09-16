@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户新增</title>
+    <link rel="stylesheet" href="media/layui/css/layui.css"/>
+    <script type="application/javascript" src="media/js/jquery.min.js"></script>
+    <script type="application/javascript" src="media/layui/layui.js"></script>
+</head>
+<body>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>新增用户</legend>
+    </fieldset>
+    <form class="layui-form" action="/saveuser.do" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" lay-verify="required" autocomplete="off" onchange="checkname(this)" placeholder="请输入用户名" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">初始密码：</label>
+            <div class="layui-input-block">
+                <input type="password" name="password" lay-verify="required" placeholder="请输入初始密码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="demo1" id="btn">添加</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+    <script type="application/javascript" >
+        layui.use('form',function () {
+            var form = layui.form;
+            //监听提交
+            form.on('submit(demo1)',function (data) {
+
+            })
+        })
+        
+        function checkname(obj) {
+            $.get("checkName.do","name="+obj.value,function (data) {
+                if(data==0){
+                    $("#btn")[0].disable=false;
+                }else {
+                    $("#btn")[0].disable=true;
+                }
+            })
+        }
+        
+    </script>
+</body>
+</html>

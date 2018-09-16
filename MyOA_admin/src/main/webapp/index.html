@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="media/layui/css/layui.css">
+    <style type="text/css">
+        iframe{
+            width: 80%;
+            height:500px;
+        }
+
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">layui 后台布局</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="">控制台</a></li>
+            <li class="layui-nav-item"><a href="">商品管理</a></li>
+            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    贤心
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="/logout.do">退了</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" id="leftMenu">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a><i class="layui-icon layui-icon-user"></i> 123</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:showTab(11,'用户列表','userlist.html');">用户列表</a></dd>
+                        <dd><a href="javascript:;">用户新增</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;"><i class="layui-icon layui-icon-group"></i> 角色管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:showTab(11,'用户列表','userlist.html');">角色列表</a></dd>
+                        <dd><a href="javascript:;">角色新增</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;"><i class="layui-icon layui-icon-util"></i> 权限管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">权限列表</a></dd>
+                        <dd><a href="javascript:;">权限新增</a></dd>
+                    </dl>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" style="width: 100%;height: 90%;">
+        <!-- 内容主体区域 -->
+        <div style="width: 100%;height: 90%;padding: 10px;">
+            <div class="layui-tab" lay-filter="demo" style="width: 100%;height:90%">
+                <ul class="layui-tab-title">
+                </ul>
+                <div class="layui-tab-content" style="width:100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+<script type="application/javascript" src="media/js/jquery.min.js"></script>
+<script src="media/layui/layui.js"></script>
+<script>
+    //JavaScript代码区域
+    var element;
+    layui.use('element', function(){
+        element = layui.element;
+        initMenu();
+    });
+    
+    function initMenu() {
+        var li = "";
+        $.get("/getMenu.do",null,function (datas) {
+            $.each(datas,function (i,data1) {
+                li +=  "<li class=\"layui-nav-item layui-nav-itemed\">\n" +
+                    "<a><i class='layui-icon' "+data1.parent.icon+"></i>"+data1.parent.name+"</a>"
+
+                if(data1.children.length > 0){
+                    li += "<dl class=\"layui-nav-child\">"
+                    $.each(data1.children,function (j,data2) {
+                        li += "<dd><a href=\"javascript:showTab("+data2.id+",'"+data2.name+"','"+data2.per+"');\">"+data2.name+"</a></dd>"
+
+                    })
+
+                    li += "</dl>"
+                }
+
+                li += "</li>"
+            })
+
+            $("#leftMenu").html(li);
+            element.render();
+        })
+    }
+
+    var tid=-1;
+    //创建选项卡
+    function showTab(id,title,url) {
+        if(tid>0){
+            element.tabDelete('demo',tid);
+        }
+        element.tabAdd('demo', {
+            title:title
+            ,content: "<iframe data-frameid='"+id+"' src='"+url+"' scrolling='auto'></iframe>"
+            ,id: id
+        });
+        console.log(title);
+        element.tabChange('demo',id);
+        element.render();
+        tid=id;
+    }
+</script>
+</body>
+</html>
